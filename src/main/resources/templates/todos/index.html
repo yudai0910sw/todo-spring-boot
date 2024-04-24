@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Sample</title>
+    <style>
+        .strike-through {
+            text-decoration: line-through;
+        }
+    </style>
+
+    <script>
+        console.log(1111)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.todo-checkbox').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const todoId = this.getAttribute('data-todo-id');
+                    const isChecked = this.checked ? 1 : 0;
+                    const formData = new FormData();
+                    formData.append('done', isChecked);
+
+                    fetch(`/todo/status/${todoId}`, { // 修正されたURL
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Todo status updated successfully');
+                            } else {
+                                console.error('Error updating todo status');
+                            }
+                        });
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+<h2>My Todo App</h2>
+<table>
+    <tr><th>Done</th><th>id</th><th>title</th><th>body</th></tr>
+    <tr th:each="todo : ${todos}">
+        <td><input type="checkbox" class="todo-checkbox" data-todo-id="${todo.id}" th:checked="${todo.done}" th:data-todo-id="${todo.id}" /></td>
+        <td th:text="${todo.id}"></td>
+        <td th:text="${todo.title}"></td>
+        <td th:text="${todo.body}"></td>
+        <td>
+            <a href="#" th:href="@{'/todo/' + ${todo.id}}"><button>編集</button></a>
+        </td>
+        <td>
+            <form action="#" th:action="@{'/todo/' + ${todo.id}}" method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <input type="submit" value="削除" />
+            </form>
+        </td>
+    </tr>
+</table>
+
+<h2>Todo入力フォーム</h2>
+<form method="post" th:action="@{/todo/create}" th:object="${todo}">
+    <label for="title">タイトル</label>
+    <input type="text" id="title" name="title" th:value="*{title}"><br>
+    <label for="body">内容</label>
+    <input type="text" id="body" name="body" th:value="*{body}"><br>
+    <input type="submit" value="作成">
+</form>
+</body>
+</html>

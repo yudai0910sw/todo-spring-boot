@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Sample</title>
+</head>
+<body>
+<h2>Todo編集フォーム</h2>
+<form method="post" action="#" th:action="@{'/todo/' + ${todo.id}}" th:object="${todo}">
+    <input type="hidden" name="_method" value="put" />
+    <label for="title">タイトル</label>
+    <input type="text" id="title" name="title" th:value="${todo.title}"><br>
+    <label for="body">内容</label>
+    <input type="text" id="body" name="body" th:value="${todo.body}"><br>
+    <input type="submit" value="送信">
+</form>
+</body>
+</html>
